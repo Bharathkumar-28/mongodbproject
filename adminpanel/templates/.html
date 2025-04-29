@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ resume.full_name }} - Resume</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .contact, .skills, .experience, .education {
+            margin-top: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ resume.full_name }}</h1>
+        <p>{{ resume.email }} | {{ resume.phone }}</p>
+    </div>
+
+    <div class="contact">
+        <h3 class="section-title">Address</h3>
+        <p>{{ resume.address }}</p>
+    </div>
+
+    <div class="skills">
+        <h3 class="section-title">Skills</h3>
+        <p>{{ resume.skills }}</p>
+    </div>
+
+    <div class="experience">
+        <h3 class="section-title">Experience</h3>
+        <p>{{ resume.experience }}</p>
+    </div>
+
+    <div class="education">
+        <h3 class="section-title">Education</h3>
+        <p>{{ resume.education }}</p>
+    </div>
+</body>
+</html>

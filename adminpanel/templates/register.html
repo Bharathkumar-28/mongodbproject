@@ -1,0 +1,425 @@
+
+
+    {% comment %} <div class="container-fluid">
+        <div class="row d-flex justify-content-center mt-5">
+            <div class="col-4">
+                <h3>Register</h3>
+                <div class="">
+                    {% include 'includes/errors.html'  %}
+                </div>
+                <div class="my-3">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{form.username.value|default:""}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{form.email.value|default:""}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="password_confirm">
+                        </div>
+                        <div class="my-3 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+   
+{% comment %}    <body>
+    <div class="form-container">
+        <div class="form-wrapper">
+            <h2>Create Account</h2>
+            
+            <div class="">
+                {% include 'includes/errors.html'  %}
+            </div>
+            <form id="registrationForm" method="POST">
+                {% csrf_token %}
+                <!-- Name Field -->
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Full Name"  value="{{form.username.value|default:""}}"required>
+               
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Email Address" value="{{form.email.value|default:""}}"  required>
+                 
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                  
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" name="password_confirm" placeholder="Confirm Password" required>
+             
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>  {% endcomment %}
+
+ 
+
+       
+    
+       
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EmpowerLearn - Sign Up</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Open+Dyslexic&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --primary: hsl(230, 85%, 60%);
+                --primary-dark: hsl(230, 85%, 50%);
+                --primary-light: hsl(230, 85%, 75%);
+                --accent: hsl(280, 85%, 60%);
+                --background: hsl(220, 20%, 97%);
+                --foreground: hsl(220, 20%, 10%);
+                --card: hsl(220, 20%, 100%);
+                --card-foreground: hsl(220, 20%, 10%);
+                --border: hsl(220, 20%, 90%);
+                --ring: hsla(230, 85%, 60%, 0.5);
+                --success: hsl(142, 76%, 36%);
+                --warning: hsl(48, 96%, 53%);
+                --error: hsl(0, 84%, 60%);
+                --radius: 0.75rem;
+                --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
+                --shadow: 0 4px 6px rgba(0,0,0,0.1);
+                --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+                --font-spacing: normal;
+                --word-spacing: normal;
+                --line-height: 1.6;
+            }
+    
+            .dark {
+                --background: hsl(220, 20%, 10%);
+                --foreground: hsl(220, 20%, 97%);
+                --card: hsl(220, 20%, 15%);
+                --card-foreground: hsl(220, 20%, 97%);
+                --border: hsl(220, 20%, 20%);
+                --ring: hsla(230, 85%, 60%, 0.3);
+            }
+    
+            .dyslexia-font {
+                font-family: 'Open Dyslexic', sans-serif !important;
+            }
+    
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            body {
+                font-family: 'Lexend', sans-serif;
+                background-color: var(--background);
+                color: var(--foreground);
+                line-height: var(--line-height);
+                letter-spacing: var(--font-spacing);
+                word-spacing: var(--word-spacing);
+                transition: all 0.3s ease;
+                overflow-x: hidden;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+    
+            .navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4rem;
+                background: rgba(var(--card), 0.8);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border);
+                z-index: 50;
+            }
+    
+            .navbar-content {
+                max-width: 1400px;
+                margin: 0 auto;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 1.5rem;
+            }
+    
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--foreground);
+                text-decoration: none;
+                transition: transform 0.2s ease;
+            }
+    
+            .logo:hover {
+                transform: scale(1.05);
+            }
+    
+            .logo-icon {
+                width: 2.5rem;
+                height: 2.5rem;
+                background: linear-gradient(135deg, var(--primary), var(--accent));
+                border-radius: 0.5rem;
+                display: grid;
+                place-items: center;
+                color: white;
+                font-size: 1.25rem;
+            }
+    
+            .signup-container {
+                max-width: 400px;
+                width: 100%;
+                background: var(--card);
+                padding: 2rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                border: 1px solid var(--border);
+                text-align: center;
+                margin: 2rem;
+            }
+    
+            .signup-container h1 {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(135deg, var(--primary), var(--accent));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+    
+            .form-group {
+                margin-bottom: 1.5rem;
+                text-align: left;
+            }
+    
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+    
+            .form-group input {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 1rem;
+                background: var(--background);
+                color: var(--foreground);
+                transition: border-color 0.2s ease;
+            }
+    
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px var(--ring);
+            }
+    
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: var(--radius);
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                border: none;
+                cursor: pointer;
+                font-family: inherit;
+                width: 100%;
+            }
+    
+            .button-primary {
+                background: var(--primary);
+                color: white;
+            }
+    
+            .button-primary:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow);
+            }
+    
+            .button-outline {
+                background: transparent;
+                border: 2px solid var(--primary);
+                color: var(--primary);
+            }
+    
+            .button-outline:hover {
+                background: var(--primary-light);
+                color: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow);
+            }
+    
+            .error-message {
+                color: var(--error);
+                font-size: 0.9rem;
+                margin-top: 0.5rem;
+                display: none;
+            }
+    
+            .login-link {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            }
+    
+            .login-link a {
+                color: var(--primary);
+                text-decoration: none;
+                font-weight: 500;
+            }
+    
+            .login-link a:hover {
+                text-decoration: underline;
+            }
+    
+            .loading {
+                position: fixed;
+                inset: 0;
+                background: var(--background);
+                display: grid;
+                place-items: center;
+                z-index: 1000;
+            }
+    
+            .loader {
+                width: 40px;
+                height: 40px;
+                border: 3px solid var(--border);
+                border-top-color: var(--primary);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+    
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+    
+            @media (max-width: 768px) {
+                .signup-container {
+                    margin: 1rem;
+                    padding: 1.5rem;
+                }
+    
+                .signup-container h1 {
+                    font-size: 1.75rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Loading Screen -->
+        <div class="loading" id="loading">
+            <div class="loader"></div>
+        </div>
+    
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">EL</div>
+                    <span>EmpowerLearn</span>
+                </a>
+            </div>
+        </nav>
+    
+        <!-- Sign Up Form -->
+        <div class="signup-container">
+            <div class="">
+                {% include 'includes/errors.html'  %}
+            </div>
+            <h1>Sign Up</h1>
+            <form id="signupForm" method='POST'>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Full Name"  value="{{form.username.value|default:""}}"required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email Address" value="{{form.email.value|default:""}}"  required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                
+                </div>
+                <div class="form-group">
+                    <label for="password">Confirm Password</label>
+                    <div class="form-group">
+                       
+                        <input type="password" id="confirmPassword" name="password_confirm" placeholder="Confirm Password" required>
+                    
+                    </div>
+                
+                </div>
+                <button type="submit" class="button button-primary">Sign Up</button>
+            </form>
+            <div class="login-link">
+                Already have an account? <a href="/login">Login</a>
+            </div>
+        </div>
+    
+        <script>
+            // Remove loading screen
+            window.addEventListener('load', () => {
+                document.getElementById('loading').style.display = 'none';
+            });
+    
+            // Handle Sign Up (Placeholder)
+            function handleSignUp(event) {
+                event.preventDefault();
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const errorMessage = document.getElementById('errorMessage');
+    
+                // Placeholder sign-up logic (replace with actual registration)
+                if (username && email && password) {
+                    alert('Sign up successful! Redirecting to login page...');
+                    window.location.href = 'login.html'; // Replace with your login page URL
+                } else {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        </script>
+    </body>
+    </html>

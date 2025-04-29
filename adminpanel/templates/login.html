@@ -1,0 +1,273 @@
+
+    {% comment %} <div class="container-fluid">
+        <div class="row d-flex justify-content-center mt-5">
+            <div class="col-4">
+                <h3>Login</h3>
+                <div class="">
+                    <div class="">
+                        {% include 'includes/errors.html'  %}
+
+                    </div>
+                <div class="col-12">
+                    <span class="text-danger"></span>
+                </div>
+    
+                <div class="container mt-3">
+                    <div class="d-flex justify-content-center">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert"> 
+                            Message <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="my-3">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{form.username.value|default:""}}">
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                       
+                        <div class="my-3 d-flex justify-content-between">
+                            <a href="{% url 'forgotpassword' %}">Forgot Password </a>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+  {% comment %}   <div class="">
+        {% include 'includes/errors.html'  %}
+
+    </div>
+    <form id="loginForm" method="POST">
+        {% csrf_token %}
+        <!-- Username Field -->
+        <div class="form-group">
+            <input type="text" id="username" name="username" placeholder="username" value="{{form.username.value|default:""}}" required>
+
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+     
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit">Login</button>
+        <a href="{% url 'forgotpassword' %}">Forgot Password </a>
+    </form> {% endcomment %}
+   
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EmpowerLearn - Login</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Open+Dyslexic&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --primary: hsl(230, 85%, 60%);
+                --primary-dark: hsl(230, 85%, 50%);
+                --background: hsl(220, 20%, 97%);
+                --foreground: hsl(220, 20%, 10%);
+                --card: hsl(220, 20%, 100%);
+                --radius: 0.75rem;
+                --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+                --border: hsl(220, 20%, 90%);
+                --ring: hsla(230, 85%, 60%, 0.5);
+            }
+    
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            body {
+                font-family: 'Lexend', sans-serif;
+                background-color: var(--background);
+                color: var(--foreground);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+    
+            .navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4rem;
+                background: rgba(var(--card), 0.8);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border);
+                z-index: 50;
+            }
+    
+            .navbar-content {
+                max-width: 1400px;
+                margin: 0 auto;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 1.5rem;
+            }
+    
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--foreground);
+                text-decoration: none;
+            }
+    
+            .login-container {
+                max-width: 400px;
+                width: 100%;
+                background: var(--card);
+                padding: 2rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                border: 1px solid var(--border);
+                text-align: center;
+                margin: 2rem;
+            }
+    
+            .login-container h1 {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+    
+            .form-group {
+                margin-bottom: 1.5rem;
+                text-align: left;
+            }
+    
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+    
+            .form-group input {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 1rem;
+                background: var(--background);
+                color: var(--foreground);
+            }
+    
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px var(--ring);
+            }
+    
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: var(--radius);
+                font-weight: 500;
+                cursor: pointer;
+                width: 100%;
+                background: var(--primary);
+                color: white;
+                border: none;
+            }
+    
+            .button:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+            }
+    
+            .error-message {
+                color: hsl(0, 84%, 60%);
+                font-size: 0.9rem;
+                margin-top: 0.5rem;
+                display: none;
+            }
+    
+            .signup-link {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            }
+    
+            .signup-link a {
+                color: var(--primary);
+                text-decoration: none;
+            }
+    
+            .signup-link a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Loading Screen -->
+        <div class="loading" id="loading">
+            <div class="loader"></div>
+        </div>
+    
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">EL</div>
+                    <span>EmpowerLearn</span>
+                </a>
+            </div>
+        </nav>
+    
+        <!-- Login Form -->
+        <div class="login-container">
+            <div class="error-message">
+                {% include 'includes/errors.html' %}
+            </div>
+            <h1>Login</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" placeholder="Username" value="{{form.username.value|default:''}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                   {% comment %}  <a href="{% url 'forgotpassword' %}">Forgot Password?</a> {% endcomment %}
+                </div>
+                <button type="submit" class="button">Login</button>
+            </form>
+            <div class="signup-link">
+                Don't have an account? <a href="/register">Sign Up</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    
