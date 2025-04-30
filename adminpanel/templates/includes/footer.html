@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbot Popup</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Floating Robot Button */
+    .robot-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      text-align: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    .robot-btn img {
+      width: 100%;
+      height: auto;
+    }
+
+    .robot-btn a {
+      display: block;
+      margin-top: 4px;
+      color: blue;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Chat Window Style */
+    .chat-popup {
+      position: fixed;
+      bottom: 110px;
+      right: 20px;
+      width: 300px;
+      max-height: 400px;
+      background-color: #f9f9f9;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+      overflow: hidden;
+    }
+
+    .chat-popup.active {
+      display: flex;
+    }
+
+    .chat-header {
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .chat-body {
+      padding: 15px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    /* Mobile-friendly */
+    @media (max-width: 500px) {
+      .robot-btn {
+        width: 60px;
+      }
+
+      .chat-popup {
+        width: 90%;
+        right: 5%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Robot Button -->
+  <div class="robot-btn">
+    <a href="/home"><img src="https://media.giphy.com/media/3o7aCTfyhYawdOXcFW/giphy.gif" alt="Robot"></a>
+  </div>
+
+
+
+
+</body>
+</html>
+
+
