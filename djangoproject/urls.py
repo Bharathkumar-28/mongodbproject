@@ -31,8 +31,12 @@ urlpatterns = [
   path('home/',views.home,name='home'),
            path('chat/', views.chat, name='chat'),
       path('example/',views.examples, name='example'),  
+     
 
-     path('resume_form', views.resume_form, name='resume_form'),
+     path('resume_form/', views.resume_form, name='resume_form'),
+  
+  path('resumes/', views.manage_resumes, name='manage_resumes'),
+
 
    path('logout/',views.logout, name='logout'),  # Add this line to include the index view
 ]

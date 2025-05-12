@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .forms import registerform
+from .forms import ResumeForm, registerform
 
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import permission_required
@@ -133,83 +133,177 @@ history = [
 def home(request):
     
     return render(request, 'chatbot.html')
+import fitz  # PyMuPDF
+from django.core.files.uploadedfile import UploadedFile
 
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+@csrf_exempt
+@require_POST
 def chat(request):
-    """Handles chat messages sent from the frontend."""
-    if request.method == 'POST':
-        user_message = request.POST.get('message', '').strip()
-        
-        if not user_message:
-            return JsonResponse({"reply": "Please enter a valid message."}, status=400)
-        
-        # Create a new chat session with the provided message
+    """Handles chat messages or resume uploads from the frontend."""
+
+    # Handle resume upload
+    if 'resume' in request.FILES:
+        resume_file: UploadedFile = request.FILES['resume']
+        if resume_file.content_type != 'application/pdf':
+            return JsonResponse({"reply": "Only PDF files are accepted."}, status=400)
+
+        try:
+            # Read file content and extract text using PyMuPDF
+            pdf_content = resume_file.read()
+            doc = fitz.open(stream=pdf_content, filetype='pdf')
+            extracted_text = ''
+            for page in doc:
+                extracted_text += page.get_text()
+
+            # You can now "analyze" the resume
+            # For example: check for skills, experience, etc.
+            if "Python" in extracted_text:
+                analysis = "Your resume mentions Python. Great choice!"
+            else:
+                analysis = "Consider adding Python if you know it — it's in demand."
+
+            return JsonResponse({
+                "reply": f"Resume analyzed.\n\nSummary:\n{analysis}"
+            })
+
+        except Exception as e:
+            return JsonResponse({"reply": f"Failed to analyze resume: {str(e)}"}, status=500)
+
+    # Handle chat messages
+    user_message = request.POST.get('message', '').strip()
+
+    if not user_message:
+        return JsonResponse({"reply": "Please enter a valid message."}, status=400)
+
+    try:
         chat_session = model.start_chat(history=history)
         response = chat_session.send_message(user_message)
-        
-        # Capture the response text
         model_response = response.text
-        
-        # Append the user and model messages to the history
+
         history.append({"role": "user", "parts": [user_message]})
         history.append({"role": "model", "parts": [model_response]})
-        
-        # Return the model's response as JSON
+
         return JsonResponse({"reply": model_response})
-
- 
-    return JsonResponse({"reply": "Invalid request."}, status=400)
-from django.shortcuts import render
+    
+    except Exception as e:
+        return JsonResponse({"reply": "An error occurred while processing your message."}, status=500)
+def oii(request):
+    return render(request, 'resume_form.html')    
+from django.shortcuts import render, redirect
 from .forms import ResumeForm
-from django.http import FileResponse
-from io import BytesIO
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from pymongo import MongoClient
+from .models import Resume
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['resumedb']
-collection = db['resumes']
+from django.shortcuts import render
+from django.http import HttpResponse
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from .forms import ResumeForm
+from .models import Resume
 
 def resume_form(request):
     if request.method == 'POST':
         form = ResumeForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            collection.insert_one(data)  # Save to MongoDB
+            # Save to MongoDB
+            resume = Resume(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
+                skills=form.cleaned_data['skills'],
+                experience=form.cleaned_data['experience'],
+                internships=form.cleaned_data['internships']
+            )
+            resume.save()
 
-            # Generate PDF
+            # === PDF GENERATION ===
             buffer = BytesIO()
-            p = canvas.Canvas(buffer, pagesize=A4)
+            p = canvas.Canvas(buffer)
+            width, height = p._pagesize
+
+            y = height - 50  # Start from top
+
             p.setFont("Helvetica-Bold", 16)
-            p.drawString(100, 800, f"Resume - {data['name']}")
-            
+            p.drawString(100, y, "Professional Resume")
+            y -= 30
+
             p.setFont("Helvetica", 12)
-            p.drawString(100, 770, f"Email: {data['email']}")
-            p.drawString(100, 750, f"Phone: {data['phone']}")
+            p.drawString(100, y, f"Name: {resume.name}")
+            y -= 20
+            p.drawString(100, y, f"Email: {resume.email}")
+            y -= 20
+            p.drawString(100, y, f"Phone: {resume.phone}")
+            y -= 30
 
             p.setFont("Helvetica-Bold", 14)
-            p.drawString(100, 720, "Skills:")
+            p.drawString(100, y, "Skills:")
+            y -= 20
             p.setFont("Helvetica", 12)
-            for i, line in enumerate(data['skills'].split('\n')):
-                p.drawString(120, 700 - i*15, f"- {line.strip()}")
+            for skill in resume.skills.split(','):
+                p.drawString(120, y, f"- {skill.strip()}")
+                y -= 15
 
+            y -= 10
             p.setFont("Helvetica-Bold", 14)
-            p.drawString(100, 640, "Experience:")
+            p.drawString(100, y, "Experience:")
+            y -= 20
             p.setFont("Helvetica", 12)
-            for i, line in enumerate(data['experience'].split('\n')):
-                p.drawString(120, 620 - i*15, f"- {line.strip()}")
+            for line in resume.experience.split('\n'):
+                p.drawString(120, y, line.strip())
+                y -= 15
 
-            p.setFont("Helvetica-Bold", 14)
-            p.drawString(100, 560, "Internships:")
-            p.setFont("Helvetica", 12)
-            for i, line in enumerate(data['internships'].split('\n')):
-                p.drawString(120, 540 - i*15, f"- {line.strip()}")
+            if resume.internships.strip():
+                y -= 10
+                p.setFont("Helvetica-Bold", 14)
+                p.drawString(100, y, "Internships:")
+                y -= 20
+                p.setFont("Helvetica", 12)
+                for line in resume.internships.split('\n'):
+                    p.drawString(120, y, line.strip())
+                    y -= 15
 
             p.showPage()
             p.save()
             buffer.seek(0)
-            return FileResponse(buffer, as_attachment=True, filename='resume.pdf')
+
+            return HttpResponse(buffer, content_type='application/pdf')
+
     else:
         form = ResumeForm()
 
-    return render(request, 'resume_form.html', {'form': form})
+    return render(request, 'resume_.html', {'form': form})
+
+# views.py
+
+from django.shortcuts import render, redirect
+from .models import Resume
+from bson import ObjectId  # Only if you're not using MongoEngine's default string ID
+from django.views.decorators.csrf import csrf_exempt
+
+def manage_resumes(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        resume_id = request.POST.get('resume_id')
+
+        if action == 'delete' and resume_id:
+            resume = Resume.objects.filter(id=resume_id).first()
+            if resume:
+                resume.delete()
+            return redirect('manage_resumes')
+
+        elif action == 'update' and resume_id:
+            resume = Resume.objects.filter(id=resume_id).first()
+            if resume:
+                resume.name = request.POST.get('name')
+                resume.email = request.POST.get('email')
+                resume.phone = request.POST.get('phone')
+                resume.skills = request.POST.get('skills')
+                resume.experience = request.POST.get('experience')
+                resume.internships = request.POST.get('internships')
+                resume.save()
+            return redirect('manage_resumes')
+
+    resumes = Resume.objects.all()  # ✅ Corrected here
+    return render(request, 'resume_list.html', {'resumes': resumes})

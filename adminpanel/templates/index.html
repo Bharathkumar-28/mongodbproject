@@ -1,10 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="text-align: center; margin-top: 50px;">
-  <a href="/resume_form">
-    <img src="https://tse1.mm.bing.net/th?id=OIP.3jvqUYBaDGQan6VmhYyaJgHaD4&pid=Api&P=0&h=180" alt="Build Your Resume" style="width: 200px; height: auto;">
-  </a>
-  <p style="margin-top: 10px;">Click the image to start building your resume</p>
+<style>
+  .resume-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 400px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+  }
+
+  .resume-option {
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .resume-option:hover {
+    transform: scale(1.05);
+  }
+
+  .resume-option img {
+    width: 200px;
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .resume-option p {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+</style>
+
+<div class="resume-container">
+  <div class="resume-option">
+    <a href="/resume_form/">
+      <img src="https://tse1.mm.bing.net/th?id=OIP.3jvqUYBaDGQan6VmhYyaJgHaD4&pid=Api&P=0&h=180" alt="Build Your Resume">
+    </a>
+    <p>Resume Builder</p>
+  </div>
+  <div class="resume-option">
+    <a href="/home">
+      <img src="https://webosmotic.com/wp-content/uploads/2024/05/Img1-scaled.webp" alt="Build Your Resume">
+    </a>
+    <p>Resume analyser</p>
+  </div>
 </div>
 {% endblock %}

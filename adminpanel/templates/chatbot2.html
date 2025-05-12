@@ -1,5 +1,3 @@
-{% extends 'base.html' %}
-{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -339,27 +337,17 @@
         }
     </style>
 </head>
-
 <body>
     <div class="chat-container">
-        <div class="chat-header">RESUME ANALYSER</div>
-
-        <!-- ✅ Resume Upload Section -->
-        <div style="text-align: center; padding: 1rem;">
-            <form id="resume-upload-form" enctype="multipart/form-data">
-                <input type="file" id="resume-file" name="resume" accept=".pdf" required>
-                <button type="submit">Upload Resume (PDF)</button>
-            </form>
-            <div id="upload-status" style="margin-top: 1rem; color: var(--primary-dark); font-weight: 500;"></div>
+        <div class="chat-header">
+            Dyslexia Support Assistant
         </div>
-
         <div class="chat-body" id="messages">
             <div class="message incoming">
                 <div class="avatar">A</div>
-                <div class="text">Upload your resume to analyze</div>
+                <div class="text">Hello! How can I assist you today?</div>
             </div>
         </div>
-
         <div class="chat-footer">
             <div class="input-group">
                 <input type="text" id="user-input" placeholder="Type or speak your message..." autocomplete="off">
@@ -381,51 +369,76 @@
         let currentSpeech = null;
         let recognition = null;
 
+        // Stop speech synthesis and recognition
         function stopSpeech() {
-            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel(); // Stops any ongoing speech synthesisP
+                console.log("Speech synthesis stopped.");
+            }
+
             if (recognition && isListening) {
-                recognition.stop();
+                recognition.stop(); // Stops voice recognition if active
                 isListening = false;
-                voiceBtn.textContent = '🎤';
+                voiceBtn.textContent = '🎤'; // Reset voice button icon
+                console.log("Voice recognition stopped.");
             }
         }
 
-        stopBtn.addEventListener('click', stopSpeech);
-        window.addEventListener('beforeunload', stopSpeech);
+        // Stop button event listener
+        stopBtn.addEventListener('click', () => {
+            stopSpeech(); // Call the stop function when the stop button is clicked
+        });
 
+        // Ensure speech stops when navigating away
+        window.addEventListener('beforeunload', () => {
+            stopSpeech();
+        });
+
+        // Start voice recognition
         function startVoiceRecognition() {
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'en-US';
             recognition.start();
 
-            recognition.onstart = () => {
+            recognition.onstart = function () {
                 isListening = true;
-                voiceBtn.textContent = '🛑';
+                voiceBtn.textContent = '🛑'; // Change to stop icon during recognition
             };
 
-            recognition.onresult = (event) => {
+            recognition.onresult = function (event) {
                 const speechToText = event.results[0][0].transcript;
                 userInput.value = speechToText;
                 sendMessage();
             };
 
-            recognition.onerror = () => voiceBtn.textContent = '🎤';
-            recognition.onend = () => {
+            recognition.onerror = function (event) {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                voiceBtn.textContent = '🎤';
+            };
+
+            recognition.onend = function () {
                 isListening = false;
                 voiceBtn.textContent = '🎤';
             };
         }
 
+        // Voice button toggle
         voiceBtn.addEventListener('click', () => {
-            if (isListening) stopSpeech();
-            else startVoiceRecognition();
+            if (isListening) {
+                stopSpeech();
+            } else {
+                startVoiceRecognition();
+            }
         });
 
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
-            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
 
             appendMessage('outgoing', text);
             userInput.value = '';
@@ -479,13 +492,16 @@
             messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
         }
 
-        function speakMessage(text) {
-            const speech = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(speech);
+        function readMessageAloud(text) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+
+            currentSpeech = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(currentSpeech);
         }
 
-        function readMessageAloud(text) {
-            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+        function speakMessage(text) {
             const speech = new SpeechSynthesisUtterance(text);
             window.speechSynthesis.speak(speech);
         }
@@ -497,47 +513,8 @@
 
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
-
-        // ✅ Resume Upload Logic
-        const resumeForm = document.getElementById('resume-upload-form');
-        const resumeFile = document.getElementById('resume-file');
-        const uploadStatus = document.getElementById('upload-status');
-
-        resumeForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const file = resumeFile.files[0];
-            if (!file || file.type !== 'application/pdf') {
-                uploadStatus.textContent = "Please upload a valid PDF file.";
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('resume', file);
-
-            try {
-                const response = await fetch('/chat/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken()
-                    },
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    appendMessage('incoming', result.reply || "Resume analyzed successfully.");
-                    uploadStatus.textContent = "Resume uploaded and analyzed successfully.";
-                } else {
-                    uploadStatus.textContent = "Error uploading the resume.";
-                }
-            } catch (error) {
-                console.error("Upload error:", error);
-                uploadStatus.textContent = "Upload failed.";
-            }
-        });
     </script>
 </body>
 </html>
-{% endblock %}
 
 

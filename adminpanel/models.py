@@ -7,10 +7,10 @@ from django.db import models
 
 class Resume(models.Model):
     name = models.CharField(max_length=100)
-    skills = models.JSONField()
-    experience = models.JSONField()
-    internships = models.JSONField()
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    skills = models.TextField()
+    experience = models.TextField()
+    internships = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return self.name
 
